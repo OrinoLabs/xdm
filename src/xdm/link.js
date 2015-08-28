@@ -60,7 +60,29 @@ xdm.Link = function(targetWindow, targetOrigin, opt_id) {
 xdm.Link.logger = xdm.Link.prototype.logger = goog.log.getLogger('xdm.Link');
 
 
+/** @type {string} */
 xdm.Link.SIGNALING_PORT = '__xdm__';
+
+
+/**
+ * @param {string=} opt_ownOrigin
+ * @param {string=} opt_targetOrigin
+ * @return {string}
+ */
+xdm.Link.generateId = function(opt_ownOrigin, opt_targetOrigin) {
+  var parts = [];
+  // Own and target origin.
+  opt_ownOrigin && parts.push(opt_ownOrigin);
+  opt_targetOrigin && parts.push(opt_targetOrigin);
+  // Random chars.
+  parts.push(Math.floor(Math.random() * Math.pow(36, 6)).toString(36));
+  // Counter.
+  if (!arguments.callee.count) arguments.callee.count = 0;
+  var count = arguments.callee.count++;
+  parts.push(count);
+  return parts.join('-');
+};
+
 
 /**
  * Whether the link has been established (handshake exchanged).
