@@ -9,6 +9,7 @@ goog.provide('xdm.Link');
 goog.require('goog.log');
 goog.require('xdm.NativeTransport');
 
+
 /**
  * @typedef {function(Object)}
  */
@@ -52,7 +53,14 @@ xdm.Link = function(targetWindow, targetOrigin, opt_id) {
   this.transport = xdm.NativeTransport.getInstance();
   this.transport.registerLink(this);
 
+  // NOTE: Sending can fail at this point, because loading of the target
+  // document might not have started yet.
+  // The error eventaully reported is not thrown in this
+  // execution thread, but asynchronously sometimes later when the browser
+  // actually tries to post it to the target window.
+  // (15-08-28: Only observed in Chrome so far.)
   this.send(xdm.Link.SIGNALING_PORT, 'init');
+  this.logger.info('init message sent')
 };
 
 
@@ -108,6 +116,8 @@ xdm.Link.prototype.handleSignalingMessage_ = function(msg) {
   if (msg == 'init' && !this.established_) {
     this.established_ = true;
     this.send(xdm.Link.SIGNALING_PORT, 'init');
+
+    this.logger.info('Link established (' + this.id + ')');
 
     this.queue_.forEach(function(rec) {
         this.send(rec.port, rec.payload);

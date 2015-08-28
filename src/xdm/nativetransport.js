@@ -42,8 +42,9 @@ xdm.messageProperties = ['linkId', 'port', 'payload'];
  */
 xdm.NativeTransport.prototype.handleMessageEvent_ = function(e) {
   // Check whether the received message is intended for us.
-  if (!xdm.messageProperties.every(function(prop) { return prop in e.data; })) {
-    this.logger.info('Not an XDM message. Discarding.');
+  if (!goog.isObject(e.data) ||
+      !xdm.messageProperties.every(function(prop) { return prop in e.data; })) {
+    this.logger.info('Not an XDM message, discarding.');
     return;
   }
 
@@ -55,8 +56,7 @@ xdm.NativeTransport.prototype.handleMessageEvent_ = function(e) {
   }
 
   if (link.targetOrigin != e.origin) {
-    this.logger.info('Origin mismatch.');
-    console.log('Origin mismatch.')
+    this.logger.severe('Origin mismatch: ' + link.targetOrigin + ' != ' + e.origin);
     return;
   }
 
