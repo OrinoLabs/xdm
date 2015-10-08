@@ -1,4 +1,4 @@
-/**
+  /**
  * @copyright 2015 Orino Labs GmbH
  * @author Michael Bürge <mib@orino.ch>
  */
@@ -11,7 +11,7 @@ goog.require('xdm.NativeTransport');
 
 
 /**
- * @typedef {function(Object)}
+ * @typedef {function(*):void}
  */
 xdm.MessageHandler;
 
@@ -110,7 +110,8 @@ xdm.Link.prototype.addPort = function(name, handler) {
 
 
 /**
- * @param {string} msg
+ * @param {*} msg
+ * @private
  */
 xdm.Link.prototype.handleSignalingMessage_ = function(msg) {
   if (msg == 'init' && !this.established_) {
