@@ -85,8 +85,8 @@ xdm.Link.generateId = function(opt_ownOrigin, opt_targetOrigin) {
   // Random chars.
   parts.push(Math.floor(Math.random() * Math.pow(36, 6)).toString(36));
   // Counter.
-  if (!arguments.callee.count) arguments.callee.count = 0;
-  var count = arguments.callee.count++;
+  if (!xdm.Link.count) xdm.Link.count = 0;
+  var count = xdm.Link.count++;
   parts.push(count);
   return parts.join('-');
 };
